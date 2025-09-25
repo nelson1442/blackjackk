@@ -7,6 +7,8 @@ let cards = []
 let sum = 0
 let hasBlackJack = false
 let isAlive = false
+let fiveCard = false;
+
 let message = ""
 let messageEl = document.getElementById("message-el")
 let sumEl = document.getElementById("sum-el")
@@ -29,6 +31,8 @@ function getRandomCard() {
 function startGame() {
     isAlive = true;
     hasBlackJack = false;
+    fiveCard = false;
+
     let firstCard = getRandomCard()
     let secondCard = getRandomCard()
     cards = [firstCard, secondCard]
@@ -43,25 +47,43 @@ function renderGame() {
     }
     
     sumEl.textContent = "Sum: " + sum
-    if (sum <= 20) {
+
+    if (fiveCardRule(cards)) {
+        if (sum <= 21) {
+            message = "Five Cards drawn! You win!";
+            isAlive = false;
+            fiveCard = true;
+        } else {
+            message = "You're out of the game!"
+            isAlive = false;
+            fiveCard = true;
+        }
+
+    } else if (sum <= 20) {
         message = "Do you want to draw a new card?"
     } else if (sum === 21) {
         message = "You've got Blackjack!"
         hasBlackJack = true
+        isAlive = false; 
     } else {
         message = "You're out of the game!"
         isAlive = false
     }
+
     messageEl.textContent = message
 }
 
 
 function newCard() {
-    console.log("newCard called, isAlive:", isAlive, "hasBlackJack:", hasBlackJack, "sum:", sum);
     if (isAlive === true && hasBlackJack === false) {
         let card = getRandomCard();
         sum += card;
         cards.push(card);
         renderGame();        
     }
+}
+
+function fiveCardRule(arr) {
+    if (arr.length === 5) return true;
+    return false;
 }
